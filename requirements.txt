@@ -1,6 +1,10 @@
-fastapi==0.103.0
-python-dotenv==1.0.0
-uvicorn==0.23.2
-python-dotenv==1.0.0
-python-multipart==0.0.6
-deepface==0.0.89
+# FastAPI web server
+fastapi
+uvicorn
+python-dotenv
+python-multipart
+
+# Image processing
+numpy
+opencv-python-headless
+Pillow

@@ -1,25 +1,19 @@
-FROM python:3.8.10-buster
-USER root
+# Use the official Python 3.10 image.
+FROM python:3.10-slim
 
-# COPY ./sources.list /etc/apt/sources.list
-RUN apt update && \
-    apt install -y libgl1-mesa-glx libglib2.0-0 libsm6 libxrender1 libfontconfig1 && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/log/*
-
+# Set the working directory in the container.
 WORKDIR /app
-COPY requirements.txt .
 
-# 安装依赖包
-RUN pip3 install --no-cache-dir -r requirements.txt
+# Copy and install wheel dependencies first to leverage Docker layer caching.
+COPY rknn-toolkit-lite2/packages/rknn_toolkit_lite2-2.3.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl ./
+COPY inspireface-0.0.0-cp310-cp310-linux_aarch64.whl ./
+RUN pip install --no-cache-dir rknn_toolkit_lite2-2.3.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl inspireface-0.0.0-cp310-cp310-linux_aarch64.whl
 
-RUN mkdir -p /models/.deepface/weights && \
-    wget -nv -O /models/.deepface/weights/retinaface.h5 https://github.com/serengil/deepface_models/releases/download/v1.0/retinaface.h5 && \
-    wget -nv -O /models/.deepface/weights/facenet512_weights.h5 https://github.com/serengil/deepface_models/releases/download/v1.0/facenet512_weights.h5
+# Copy the rest of the application code.
+COPY requirements.txt server_rknn.py ./
 
+# Install other dependencies from requirements.txt.
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY server.py .
-ENV DEEPFACE_HOME=/models
-ENV API_AUTH_KEY=mt_photos_ai_extra
-EXPOSE 8066
-
-CMD [ "python3", "server.py" ]
+# Set the command to run the application.
+CMD ["python", "server_rknn.py"]
