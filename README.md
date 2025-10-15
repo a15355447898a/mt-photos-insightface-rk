@@ -14,7 +14,7 @@
 ```
 services:
   mt-photos-insightface:
-    image: mt-photos-insightface-rknn:latest
+    image: a15355447898a/mt-photos-insightface-rknn:latest
     container_name: mt-photos-insightface
     hostname: mt-photos-insightface
     environment:
