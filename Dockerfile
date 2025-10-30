@@ -15,5 +15,11 @@ COPY requirements.txt server_rknn.py ./
 # Install other dependencies from requirements.txt.
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Create directory for InspireFace models
+RUN mkdir -p /root/.inspireface/ms/tunmxy/InspireFace/
+
+# Copy InspireFace models
+COPY InspireFace/ /root/.inspireface/ms/tunmxy/InspireFace/
+
 # Set the command to run the application.
 CMD ["python", "server_rknn.py"]
