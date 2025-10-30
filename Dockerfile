@@ -15,6 +15,9 @@ COPY requirements.txt server_rknn.py ./
 # Install other dependencies from requirements.txt.
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install modelscope so InspireFace can locate cached models.
+RUN pip install --no-cache-dir modelscope
+
 # Create directory for InspireFace models
 RUN mkdir -p /root/.inspireface/ms/tunmxy/InspireFace/
 
