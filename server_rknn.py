@@ -42,13 +42,18 @@ class Worker(threading.Thread):
 
     def init_model(self):
         try:
+            core_mask = 0
+            if self.core_id is not None and self.core_id >= 0:
+                core_mask = 1 << self.core_id
+            if core_mask:
+                isf.set_rknn_core_mask(core_mask)
             # 自动下载并加载 Gundam_RK3588 模型
             isf.reload("Gundam_RK3588")
             # 创建会话配置，启用人脸质量检测和识别
             opt = isf.HF_ENABLE_QUALITY | isf.HF_ENABLE_FACE_RECOGNITION
             # 创建 InspireFace 会话
             self.face_session = isf.InspireFaceSession(opt, isf.HF_DETECT_MODE_ALWAYS_DETECT)
-            logging.info(f"Worker {self.core_id} initialized successfully.")
+            logging.info(f"Worker {self.core_id} initialized successfully (core_mask=0x{core_mask:x}).")
         except Exception as e:
             logging.exception(f"Worker {self.core_id} failed to initialize: {e}")
 
