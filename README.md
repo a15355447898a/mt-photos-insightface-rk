@@ -1,17 +1,27 @@
 # MT Photos人脸识别API
 
-- 基于[deepinsight/insightface](https://github.com/deepinsight/insightface)实现的人脸识别API
+- 基于[deepinsight/insightface](https://github.com/deepinsight/insightface)实现的人脸识别API，利用 RKNN 进行加速。
 
+## 更新日志
 
-## 安装方法
+> * 2025/10/30
+>   * 项目现已支持三线程并行处理，能够同时调用 RK3588 芯片的三个 NPU 核心，充分利用硬件资源
+>     需要在MT-Photos中将人脸识别任务的并发数设置成3
 
-- 下载镜像
+## 镜像说明
 
-去releases下载
+您可以通过 Docker 来快速部署应用。
 
-- 创建容器
+### 打包Docker镜像
 
+```bash
+# 在arm机器上打包
+sudo docker build -t mt-photos-insightface-rknn:latest .
 ```
+
+### 运行Docker容器
+
+```yaml
 services:
   mt-photos-insightface:
     image: a15355447898a/mt-photos-insightface-rknn:latest
@@ -30,13 +40,8 @@ services:
         - /usr/lib/librknnrt.so:/usr/lib/librknnrt.so
 ```
 
-
-
-## 打包docker镜像
-
-```bash
-sudo docker build -t mt-photos-insightface-rknn:latest .
-```
+> - `API_AUTH_KEY` 为 MT Photos 连接时需要填写的 `api_key`。
+> - 端口 `8060` 可根据需要自行修改。
 
 
 ## API
